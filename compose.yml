@@ -1,0 +1,23 @@
+version: '3'
+services:
+  stw_db_pg_15:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB = stw_music_bot_db
+      - POSTGRES_USER = postgres
+      - POSTGRES_PASSWORD = postgres
+    ports:
+      - '5433:5432'
+  client-backend:
+    image: client:0.0.1
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - '8181:8181'
+    depends_on:
+      - stw_db_pg_15
+    environment:
+      - POSTGRES_DB = stw_music_bot_db
+      - POSTGRES_USER = postgres
+      - POSTGRES_PASSWORD = postgres
