@@ -2,6 +2,7 @@ package com.mccormick.stw_music_bot_api.controller;
 
 import com.mccormick.stw_music_bot_api.dto.TgPlaylistDTO;
 import com.mccormick.stw_music_bot_api.dto.TgUserDTO;
+import com.mccormick.stw_music_bot_api.exception.EntityNotFoundException;
 import com.mccormick.stw_music_bot_api.model.TgPlaylist;
 import com.mccormick.stw_music_bot_api.model.TgUser;
 import com.mccormick.stw_music_bot_api.service.TgPlaylistService;
@@ -69,5 +70,12 @@ public class TgPlaylistRestController {
 				TgUser.class
 		));
 		return tgPlaylist;
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<ErrorResponse> exceptionHandler(EntityNotFoundException e) {
+		return ResponseEntity.badRequest()
+				.contentType(APPLICATION_JSON)
+				.body(new ErrorResponse(e.getMessage()));
 	}
 }

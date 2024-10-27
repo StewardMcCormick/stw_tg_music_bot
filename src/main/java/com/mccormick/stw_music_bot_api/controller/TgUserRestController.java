@@ -1,5 +1,6 @@
 package com.mccormick.stw_music_bot_api.controller;
 
+import com.mccormick.stw_music_bot_api.exception.EntityNotFoundException;
 import com.mccormick.stw_music_bot_api.util.ErrorResponse;
 import com.mccormick.stw_music_bot_api.dto.TgUserDTO;
 import com.mccormick.stw_music_bot_api.model.TgUser;
@@ -54,5 +55,12 @@ public class TgUserRestController {
 
 	private TgUser convertDTOToTgUser(TgUserDTO tgUserDTO) {
 		return modelMapper.map(tgUserDTO, TgUser.class);
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<ErrorResponse> exceptionHandler(EntityNotFoundException e) {
+		return ResponseEntity.badRequest()
+				.contentType(APPLICATION_JSON)
+				.body(new ErrorResponse(e.getMessage()));
 	}
 }

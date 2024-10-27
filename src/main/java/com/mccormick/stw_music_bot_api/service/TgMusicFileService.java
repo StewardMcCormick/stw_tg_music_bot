@@ -17,9 +17,12 @@ public class TgMusicFileService {
 
 	private final TgMusicFileRepository tgMusicFileRepository;
 
+	private final TgPlaylistService tgPlaylistService;
+
 	@Autowired
-	public TgMusicFileService(TgMusicFileRepository musicFileRepository) {
+	public TgMusicFileService(TgMusicFileRepository musicFileRepository, TgPlaylistService tgPlaylistService) {
 		this.tgMusicFileRepository = musicFileRepository;
+		this.tgPlaylistService = tgPlaylistService;
 	}
 
 	public List<TgMusicFile> findByPlaylistId(TgPlaylist tgPlaylist) {
@@ -27,6 +30,7 @@ public class TgMusicFileService {
 	}
 
 	public List<TgMusicFile> findByPlaylistId(UUID id) {
+		tgPlaylistService.findById(id);
 		return tgMusicFileRepository.getAllByTgPlaylistId(id);
 	}
 

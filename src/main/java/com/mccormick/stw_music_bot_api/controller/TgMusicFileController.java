@@ -2,6 +2,7 @@ package com.mccormick.stw_music_bot_api.controller;
 
 import com.mccormick.stw_music_bot_api.dto.TgMusicFileDTO;
 import com.mccormick.stw_music_bot_api.dto.TgPlaylistDTO;
+import com.mccormick.stw_music_bot_api.exception.EntityNotFoundException;
 import com.mccormick.stw_music_bot_api.model.TgMusicFile;
 import com.mccormick.stw_music_bot_api.model.TgPlaylist;
 import com.mccormick.stw_music_bot_api.service.TgMusicFileService;
@@ -14,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -34,7 +35,7 @@ public class TgMusicFileController {
 		this.modelMapper = modelMapper;
 	}
 
-	@GetMapping("/playlists/{playlist_id}")
+	@GetMapping("/playlist/{playlist_id}")
 	public ResponseEntity<List<TgMusicFileDTO>> handleGetAllMusicFilesInPlaylist(@PathVariable String playlist_id){
 		List<TgMusicFileDTO> fileList = getDto(
 				tgMusicFileService.findByPlaylistId(UUID.fromString(playlist_id))
@@ -54,23 +55,12 @@ public class TgMusicFileController {
 				.body(getDto(tgMusicFile));
 	}
 
-	@PostMapping("/")
-	public ResponseEntity<?> handleSaveMusicFile(@RequestBody @Valid TgMusicFileDTO tgMusicFileDTO,
-												 BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return ErrorResponse.getErrorResponse(bindingResult);
-		}
-
-		tgMusicFileService.save(getEntity(tgMusicFileDTO));
-
-		return ResponseEntity.ok(HttpStatus.OK);
-	}
-
 	@PostMapping("/{playlist_id}")
-	public ResponseEntity<?> handleSaveListOfMusicFiles(@PathVariable String playlist_id,
+	public ResponseEntity<?> handleSaveMusicFiles(@PathVariable String playlist_id,
 														@RequestBody @Valid List<TgMusicFileDTO> tgMusicFileDTOList,
 														BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) return ResponseEntity.badRequest().contentType(APPLICATION_JSON)
+		if (bindingResult.hasErrors())
+			return ResponseEntity.badRequest().contentType(APPLICATION_JSON)
 												.body(new ErrorResponse("Invalid entities in request body"));
 
 		tgMusicFileService.save(getEntity(tgMusicFileDTOList));
@@ -79,13 +69,9 @@ public class TgMusicFileController {
 	}
 
 	private List<TgMusicFileDTO> getDto(List<TgMusicFile> tgMusicFileList) {
-		List<TgMusicFileDTO> dtoList = new ArrayList<>();
 
-		for (TgMusicFile f : tgMusicFileList) {
-			dtoList.add(modelMapper.map(f, TgMusicFileDTO.class));
-		}
-
-		return dtoList;
+		return tgMusicFileList.stream().map(this::getDto)
+				.collect(Collectors.toList());
 	}
 
 	private TgMusicFileDTO getDto(TgMusicFile tgMusicFile) {
@@ -109,12 +95,14 @@ public class TgMusicFileController {
 	}
 
 	private List<TgMusicFile> getEntity(List<TgMusicFileDTO> tgMusicFileDTOList) {
-		List<TgMusicFile> tgMusicFileList = new ArrayList<>();
+		return tgMusicFileDTOList.stream().map(this::getEntity)
+				.collect(Collectors.toList());
+	}
 
-		for (TgMusicFileDTO f : tgMusicFileDTOList) {
-			tgMusicFileList.add(modelMapper.map(f, TgMusicFile.class));
-		}
-
-		return tgMusicFileList;
+	@ExceptionHandler
+	public ResponseEntity<ErrorResponse> exceptionHandler(RuntimeException e) {
+		return ResponseEntity.badRequest()
+				.contentType(APPLICATION_JSON)
+				.body(new ErrorResponse(e.getMessage()));
 	}
 }
