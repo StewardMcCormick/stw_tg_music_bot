@@ -11,7 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "tg_music_file")
 @Getter
 @Setter
-@NoArgsConstructor(force = true)
+@NoArgsConstructor()
 public class TgMusicFile {
 
 	@Id
