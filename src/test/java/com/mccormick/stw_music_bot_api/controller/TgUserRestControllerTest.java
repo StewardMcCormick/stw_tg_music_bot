@@ -63,7 +63,6 @@ class TgUserRestControllerTest {
 		Assertions.assertEquals(tgUserDTO, responseEntity.getBody());
 	}
 
-
 	@Test
 	@DisplayName("POST /api/v1/tg_user returns HTTP 200 because saved entity is valid")
 	void saveUser_EntityIsValid_ReturnsValidResponseEntity() {
