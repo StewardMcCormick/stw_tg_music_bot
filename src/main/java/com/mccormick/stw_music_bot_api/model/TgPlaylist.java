@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class TgPlaylist {
 
 	@Id
@@ -26,5 +29,12 @@ public class TgPlaylist {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TgUser tgUser;
+
+	public TgPlaylist(UUID id, String imageId, TgUser tgUser) {
+		this.id = id;
+		this.imageId = imageId;
+		this.tgUser = tgUser;
+	}
 }

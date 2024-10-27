@@ -21,6 +21,7 @@
         <lombok.version>1.18.34</lombok.version>
         <validator.version>8.0.1.Final</validator.version>
         <liquibase.version>4.29.2</liquibase.version>
+        <modelmapper.version>3.2.1</modelmapper.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,12 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <dependency>

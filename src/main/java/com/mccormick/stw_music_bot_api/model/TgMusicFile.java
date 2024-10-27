@@ -3,11 +3,9 @@ package com.mccormick.stw_music_bot_api.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
-
-import java.util.UUID;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "tg_music_file")
@@ -22,5 +20,6 @@ public class TgMusicFile {
 
 	@ManyToOne
 	@JoinColumn(name = "playlist_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TgPlaylist tgPlaylist;
 }
